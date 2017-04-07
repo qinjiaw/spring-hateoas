@@ -15,10 +15,10 @@
  */
 package org.springframework.hateoas.alps;
 
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Value;
-
-import java.util.List;
 
 /**
  * A value object for an ALPS descriptor.

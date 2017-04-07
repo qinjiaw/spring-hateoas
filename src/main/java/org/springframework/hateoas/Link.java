@@ -173,7 +173,7 @@ public class Link implements Serializable {
 	 * @return
 	 */
 	public Link expand(Object... arguments) {
-		return new Link(getUriTemplate().expand(arguments).toString(), getRel());
+		return new Link(getUriTemplate().expand(arguments).toUri().toString(), getRel());
 	}
 
 	/**

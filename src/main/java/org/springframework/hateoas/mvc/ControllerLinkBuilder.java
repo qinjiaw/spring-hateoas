@@ -17,14 +17,14 @@ package org.springframework.hateoas.mvc;
 
 import static org.springframework.util.StringUtils.*;
 
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.Delegate;
-
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.Delegate;
 
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.TemplateVariables;

@@ -26,6 +26,7 @@ import java.util.Collections;
 
 import org.apache.commons.io.output.WriterOutputStream;
 import org.junit.Assume;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.hateoas.PagedResources.PageMetadata;
 import org.springframework.http.HttpHeaders;
@@ -56,6 +57,7 @@ public class Jackson2PagedResourcesIntegrationTest {
 	/**
 	 * @see SPR-13318
 	 */
+	@Ignore
 	@Test
 	public void serializesPagedResourcesCorrectly() throws Exception {
 

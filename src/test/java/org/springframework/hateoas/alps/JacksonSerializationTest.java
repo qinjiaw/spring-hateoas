@@ -23,6 +23,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import com.fasterxml.jackson.core.PrettyPrinter;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -34,7 +38,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * Unit tests for serialization of ALPS documents.
- * 
+ *
  * @author Oliver Gierke
  */
 public class JacksonSerializationTest {

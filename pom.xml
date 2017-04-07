@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.springframework.hateoas</groupId>
 	<artifactId>spring-hateoas</artifactId>
-	<version>0.24.0.BUILD-SNAPSHOT</version>
+	<version>0.24.0.AFFORDANCES-SNAPSHOT</version>
 
 	<name>Spring HATEOAS</name>
 	<url>http://github.com/SpringSource/spring-hateoas</url>
@@ -210,9 +211,8 @@
 
 				<plugins>
 
-					<!--
-						Unpacks the content of spring-data-build-resources into the shared resources folder.
-					-->
+					<!-- Unpacks the content of spring-data-build-resources into the shared
+						resources folder. -->
 
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
@@ -235,9 +235,7 @@
 						</configuration>
 					</plugin>
 
-					<!--
-						Configures JavaDoc generation.
-					-->
+					<!-- Configures JavaDoc generation. -->
 
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
@@ -291,19 +289,9 @@
 								</configuration>
 							</execution>
 
-							<!--
-							<execution>
-								<id>epub</id>
-								<phase>generate-resources</phase>
-								<goals>
-									<goal>process-asciidoc</goal>
-								</goals>
-								<configuration>
-									<backend>epub3</backend>
-									<sourceHighlighter>coderay</sourceHighlighter>
-								</configuration>
-							</execution>
-							-->
+							<!-- <execution> <id>epub</id> <phase>generate-resources</phase> <goals>
+								<goal>process-asciidoc</goal> </goals> <configuration> <backend>epub3</backend>
+								<sourceHighlighter>coderay</sourceHighlighter> </configuration> </execution> -->
 
 							<execution>
 								<id>pdf</id>
@@ -347,13 +335,15 @@
 								<configuration>
 									<target>
 										<copy todir="${project.root}/target/site/reference/html">
-											<fileset dir="${shared.resources}/asciidoc" erroronmissingdir="false">
+											<fileset dir="${shared.resources}/asciidoc"
+												erroronmissingdir="false">
 												<include name="**/*.css" />
 											</fileset>
 											<flattenmapper />
 										</copy>
 										<copy todir="${project.root}/target/site/reference/html/images">
-											<fileset dir="${basedir}/src/main/asciidoc" erroronmissingdir="false">
+											<fileset dir="${basedir}/src/main/asciidoc"
+												erroronmissingdir="false">
 												<include name="**/*.png" />
 												<include name="**/*.gif" />
 												<include name="**/*.jpg" />
@@ -372,8 +362,12 @@
 								<phase>process-resources</phase>
 								<configuration>
 									<target>
-										<copy file="${project.build.directory}/generated-docs/index.pdf" tofile="${project.root}/target/site/reference/pdf/${project.artifactId}-reference.pdf" failonerror="false" />
-										<copy file="${project.build.directory}/generated-docs/index.epub" tofile="${project.root}/target/site/reference/epub/${project.artifactId}-reference.epub" failonerror="false" />
+										<copy file="${project.build.directory}/generated-docs/index.pdf"
+											tofile="${project.root}/target/site/reference/pdf/${project.artifactId}-reference.pdf"
+											failonerror="false" />
+										<copy file="${project.build.directory}/generated-docs/index.epub"
+											tofile="${project.root}/target/site/reference/epub/${project.artifactId}-reference.epub"
+											failonerror="false" />
 									</target>
 								</configuration>
 								<goals>
@@ -601,7 +595,15 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!--  Needs to be after Jadler to make sure it sees the Servlet 3.0 dependency pulled in for testing -->
+		<dependency>
+			<groupId>com.jayway.jsonpath</groupId>
+			<artifactId>json-path-assert</artifactId>
+			<version>2.2.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Needs to be after Jadler to make sure it sees the Servlet 3.0 dependency
+			pulled in for testing -->
 
 		<dependency>
 			<groupId>javax.servlet</groupId>
