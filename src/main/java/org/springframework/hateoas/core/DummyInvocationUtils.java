@@ -100,6 +100,10 @@ public class DummyInvocationUtils {
 		@Override
 		public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) {
 
+//			if (method.getName().equals("toString")) {
+//				return "Debugging?";
+//			}
+
 			if (GET_INVOCATIONS.equals(method)) {
 				return getLastInvocation();
 			} else if (GET_OBJECT_PARAMETERS.equals(method)) {
@@ -179,12 +183,6 @@ public class DummyInvocationUtils {
 
 			return (T) factory.getProxy();
 		}
-
-		Enhancer enhancer = new Enhancer();
-		enhancer.setSuperclass(type);
-		enhancer.setInterfaces(new Class<?>[] { LastInvocationAware.class });
-		enhancer.setCallbackType(org.springframework.cglib.proxy.MethodInterceptor.class);
-		enhancer.setClassLoader(classLoader);
 
 		Factory factory = (Factory) OBJENESIS.newInstance(getOrCreateEnhancedClass(type, classLoader));
 		factory.setCallbacks(new Callback[] { interceptor });

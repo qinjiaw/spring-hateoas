@@ -70,6 +70,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.version>4.3.5.RELEASE</spring.version>
+		<spring-restdocs.version>1.2.0.RELEASE</spring-restdocs.version>
 		<logback.version>1.1.8</logback.version>
 		<jacoco>0.7.8</jacoco>
 		<jacoco.destfile>${project.build.directory}/jacoco.exec</jacoco.destfile>
@@ -193,7 +194,6 @@
 			<properties>
 				<shared.resources>${project.build.directory}/shared-resources</shared.resources>
 				<maven.install.skip>true</maven.install.skip>
-				<skipTests>true</skipTests>
 				<project.root>${basedir}</project.root>
 			</properties>
 
@@ -251,6 +251,18 @@
 						</executions>
 					</plugin>
 
+					<!-- ONLY run the **DocumentationTest test cases for Spring RestDocs -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.20</version>
+						<configuration>
+							<includes>
+								<include>**/*DocumentationTest</include>
+							</includes>
+						</configuration>
+					</plugin>
+
 					<plugin>
 						<groupId>org.asciidoctor</groupId>
 						<artifactId>asciidoctor-maven-plugin</artifactId>
@@ -266,12 +278,17 @@
 								<artifactId>asciidoctorj-epub3</artifactId>
 								<version>1.5.0-alpha.6</version>
 							</dependency>
+							<dependency>
+								<groupId>org.springframework.restdocs</groupId>
+								<artifactId>spring-restdocs-asciidoctor</artifactId>
+								<version>${spring-restdocs.version}</version>
+							</dependency>
 						</dependencies>
 						<executions>
 
 							<execution>
 								<id>html</id>
-								<phase>generate-resources</phase>
+								<phase>prepare-package</phase>
 								<goals>
 									<goal>process-asciidoc</goal>
 								</goals>
@@ -295,7 +312,7 @@
 
 							<execution>
 								<id>pdf</id>
-								<phase>generate-resources</phase>
+								<phase>prepare-package</phase>
 								<goals>
 									<goal>process-asciidoc</goal>
 								</goals>
@@ -564,6 +581,13 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.restdocs</groupId>
+			<artifactId>spring-restdocs-mockmvc</artifactId>
+			<version>${spring-restdocs.version}</version>
 			<scope>test</scope>
 		</dependency>
 

@@ -488,16 +488,15 @@ public class AffordanceBuilder implements LinkBuilder {
 	}
 
 	/**
-	 * Adds actionDescriptors of the given AffordanceBuilder to this affordanceBuilder.
+	 * Adds actionDescriptors and linkParams of the given AffordanceBuilder to this affordanceBuilder.
 	 *
 	 * @param affordanceBuilder whose action descriptors should be added to this one
 	 * @return builder
 	 */
 	public AffordanceBuilder and(AffordanceBuilder affordanceBuilder) {
 
-		for (ActionDescriptor actionDescriptor : affordanceBuilder.actionDescriptors) {
-			this.actionDescriptors.add(actionDescriptor);
-		}
+		this.actionDescriptors.addAll(affordanceBuilder.getActionDescriptors());
+		this.linkParams.putAll(affordanceBuilder.linkParams);
 		return this;
 	}
 

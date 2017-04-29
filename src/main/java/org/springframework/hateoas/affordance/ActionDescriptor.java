@@ -47,6 +47,8 @@ public interface ActionDescriptor {
 
 	/**
 	 * Gets contentType consumed by the action
+	 *
+	 * TODO: This is Spring MVC specific.
 	 * 
 	 * @return
 	 */
@@ -54,6 +56,8 @@ public interface ActionDescriptor {
 
 	/**
 	 * Gets contentType produced by the action
+	 *
+	 * TODO: This is Spring MVC specific.
 	 * 
 	 * @return
 	 */
@@ -61,6 +65,8 @@ public interface ActionDescriptor {
 
 	/**
 	 * Gets names of path variables, if URL has variables.
+	 *
+	 * TODO: Possibly Spring MVC specific
 	 *
 	 * @return names or empty collection
 	 */
@@ -79,6 +85,21 @@ public interface ActionDescriptor {
 	 * @return names or empty collection
 	 */
 	Collection<String> getRequestParamNames();
+
+
+	/**
+	 * Gets all action input parameter names.
+	 *
+	 * @return
+	 */
+	Collection<String> getActionInputParameterNames();
+
+	/**
+	 * Get all of the {@link ActionInputParameter}s.
+	 * 
+	 * @return
+	 */
+	Collection<ActionInputParameter> getActionInputParameters();
 
 	/**
 	 * Gets action parameter by name.

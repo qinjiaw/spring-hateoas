@@ -196,6 +196,40 @@ public class SpringActionDescriptor implements ActionDescriptor {
 	}
 
 	/**
+	 * Gets all action input parameter names.
+	 *
+	 * @return
+	 */
+	@Override
+	public Collection<String> getActionInputParameterNames() {
+
+		Collection<String> actionInputParameterNames = new ArrayList<String>();
+
+		actionInputParameterNames.addAll(this.requestParams.keySet());
+		actionInputParameterNames.addAll(this.pathVariables.keySet());
+		actionInputParameterNames.addAll(this.bodyInputParameters.keySet());
+
+		return actionInputParameterNames;
+	}
+
+	/**
+	 * Get all of the {@link ActionInputParameter}s.
+	 *
+	 * @return
+	 */
+	@Override
+	public Collection<ActionInputParameter> getActionInputParameters() {
+
+		Collection<ActionInputParameter> actionInputParameters = new ArrayList<ActionInputParameter>();
+
+		actionInputParameters.addAll(this.requestParams.values());
+		actionInputParameters.addAll(this.pathVariables.values());
+		actionInputParameters.addAll(this.bodyInputParameters.values());
+
+		return actionInputParameters;
+	}
+
+	/**
 	 * Gets input parameter info which is part of the URL mapping, be it request parameters, path variables or request
 	 * body attributes.
 	 *
