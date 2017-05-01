@@ -57,6 +57,7 @@ public class Path {
 
 		InvocationRecordingMethodInterceptor interceptor = interceptorThreadLocal.get();
 		Assert.notNull(interceptor, "Path.on(Class) should be called first");
+
 		interceptorThreadLocal.remove();
 		return interceptor.getLastInvocation().toString();
 	}

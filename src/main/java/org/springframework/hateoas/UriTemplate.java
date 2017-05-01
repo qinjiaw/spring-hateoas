@@ -31,6 +31,8 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import lombok.EqualsAndHashCode;
+
 import org.springframework.hateoas.TemplateVariable.VariableType;
 import org.springframework.hateoas.affordance.ActionDescriptor;
 import org.springframework.hateoas.affordance.springmvc.AffordanceBuilder;
@@ -51,6 +53,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  * @see org.springframework.hateoas.affordance.springmvc
  * @since 0.9
  */
+@EqualsAndHashCode
 public class UriTemplate implements Iterable<TemplateVariable>, Serializable {
 
 	private static final Pattern VARIABLE_REGEX = Pattern.compile("\\{([\\?\\&#/]?)([\\w\\,\\.]+)(:??.*?)\\}");

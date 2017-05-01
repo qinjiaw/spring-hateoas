@@ -136,7 +136,7 @@ public class ControllerLinkBuilderFactory implements MethodLinkBuilderFactory<Co
 		Method method = invocation.getMethod();
 
 		String mapping = DISCOVERER.getMapping(invocation.getTargetType(), method);
-		UriComponentsBuilder builder = ControllerLinkBuilder.getBuilder().path(mapping);
+		UriComponentsBuilder builder = UriComponentsSupport.getBuilder().path(mapping);
 
 		UriTemplate template = new UriTemplate(mapping);
 		Map<String, Object> values = new HashMap<String, Object>();

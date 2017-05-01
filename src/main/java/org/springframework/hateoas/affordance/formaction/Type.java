@@ -22,82 +22,105 @@ package org.springframework.hateoas.affordance.formaction;
  * @author Dietrich Schulten
  */
 public enum Type {
+
 	/**
 	 * Determine input type text or number automatically, depending on the annotated parameter
 	 */
 	FROM_JAVA(null),
+
 	/**
 	 * input type text
 	 */
 	TEXT("text"),
+
 	/**
 	 * input type hidden
 	 */
 	HIDDEN("hidden"),
+
 	/**
 	 * input type password
 	 */
 	PASSWORD("password"),
+
 	/**
 	 * Color chooser
 	 */
 	COLOR("color"),
+
 	/**
 	 * Should contain a date, client may use date picker
 	 */
 	DATE("date"),
+
 	/**
 	 * Datetime widget, with timezone.
 	 */
 	DATETIME("datetime"),
+
 	/**
 	 * Datetime widget, no timezone.
 	 */
 	DATETIME_LOCAL("datetime-local"),
+
 	/**
 	 * Email address, may validate and improve touch entry.
 	 */
 	EMAIL("email"),
+
 	/**
 	 * Month/year selector.
 	 */
 	MONTH("month"),
+
 	/**
 	 * Numeric value, normally determined automatically. You can set restrictions on the numbers with {@link Input#max}, {@link Input#min} and {@link Input#step}.
 	 */
 	NUMBER("number"),
+
 	/**
 	 * Allowed range of values, use with {@link Input#max} and {@link Input#min}. Client may use slider.
 	 */
 	RANGE("range"),
+
 	/**
 	 * Search field, may add search entry support, e.g. a delete term widget.
 	 */
 	SEARCH("search"),
+
 	/**
 	 * Phone number
 	 */
 	TEL("tel"),
+
 	/**
 	 * Select time, may use time picker.
 	 */
 	TIME("time"),
+
 	/**
 	 * Field is a URL
 	 */
 	URL("url"),
+
 	/**
 	 * Week/Year selector
 	 */
 	WEEK("week"),
+
 	/**
 	 * Input type checkbox
 	 */
 	CHECKBOX("checkbox"),
+
 	/**
 	 * Input type radio
 	 */
 	RADIO("radio"),
+
+	/**
+	 * A form submit button
+	 */
 	SUBMIT("submit");
 
 	private String value;
@@ -113,16 +136,20 @@ public enum Type {
 		return value;
 	}
 
-	public static Type fromInputType(String inputType) {
-		Type[] values = Type.values();
-		Type ret = null;
-		for (Type type : values) {
+	/**
+	 * Convert a string-based representation into an enum.
+	 * 
+	 * @param inputType
+	 * @return
+	 */
+	public static Type parseInputType(String inputType) {
+
+		for (Type type : Type.values()) {
 			if (inputType.equals(type.value)) {
-				ret = type;
-				break;
+				return type;
 			}
 		}
-		return ret;
+		return null;
 	}
 
 }

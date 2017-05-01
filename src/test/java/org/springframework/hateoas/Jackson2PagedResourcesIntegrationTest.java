@@ -17,6 +17,7 @@ package org.springframework.hateoas;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
+import static org.junit.Assume.assumeThat;
 import static org.mockito.Mockito.*;
 
 import java.io.StringWriter;
@@ -57,11 +58,10 @@ public class Jackson2PagedResourcesIntegrationTest {
 	/**
 	 * @see SPR-13318
 	 */
-	@Ignore
 	@Test
 	public void serializesPagedResourcesCorrectly() throws Exception {
 
-		Assume.assumeThat(SPRING_4_2_WRITE_METHOD, is(notNullValue()));
+		assumeThat(SPRING_4_2_WRITE_METHOD, is(notNullValue()));
 
 		User user = new User();
 		user.firstname = "Dave";

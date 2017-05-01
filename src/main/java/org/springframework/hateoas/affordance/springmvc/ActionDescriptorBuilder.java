@@ -39,64 +39,64 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author Dietrich Schulten
+ * @author Greg Turnquist
  */
 class ActionDescriptorBuilder {
 
+	/**
+	 * Use the details about the {@link Method} and it's Spring Web annotations to construct an {@link ActionDescriptor}.
+	 *
+	 * @param invokedMethod
+	 * @param values
+	 * @param arguments
+	 * @return
+	 */
 	static ActionDescriptor createActionDescriptor(Method invokedMethod, Map<String, Object> values, Object... arguments) {
 
 		SpringActionDescriptor actionDescriptor = new SpringActionDescriptor(invokedMethod);
-		Action actionAnnotation = AnnotationUtils.getAnnotation(invokedMethod, Action.class);
 
+		Action actionAnnotation = AnnotationUtils.getAnnotation(invokedMethod, Action.class);
 		if (actionAnnotation != null) {
 			actionDescriptor.setSemanticActionType(actionAnnotation.value());
 		}
 
-		// the action descriptor needs to know the param type, value and name
-		Map<String, ActionInputParameter> requestParamMap = getRequestParams(invokedMethod, arguments);
-		for (Map.Entry<String, ActionInputParameter> entry : requestParamMap.entrySet()) {
+		Map<String, ActionInputParameter> requestParamMap = getRequestParamsAndDtoParams(invokedMethod, arguments);
+		for (Map.Entry<String, ActionInputParameter> actionInputParameter : requestParamMap.entrySet()) {
 
-			ActionInputParameter value = entry.getValue();
+			if (actionInputParameter.getValue() != null) {
 
-			if (value == null) {
-				continue;
-			}
+				actionDescriptor.addRequestParam(actionInputParameter.getKey(), actionInputParameter.getValue());
 
-			String key = entry.getKey();
-			actionDescriptor.addRequestParam(key, value);
-
-			if (!value.isRequestBody()) {
-				values.put(key, value.getValueFormatted());
+				if (!actionInputParameter.getValue().isRequestBody()) {
+					values.put(actionInputParameter.getKey(), actionInputParameter.getValue().getValueFormatted());
+				}
 			}
 		}
 
 		Map<String, ActionInputParameter> pathVariableMap = getActionInputParameters(PathVariable.class, invokedMethod,
 				arguments);
-		for (Map.Entry<String, ActionInputParameter> entry : pathVariableMap.entrySet()) {
+		for (Map.Entry<String, ActionInputParameter> actionInputParameter : pathVariableMap.entrySet()) {
 
-			ActionInputParameter actionInputParameter = entry.getValue();
+			if (actionInputParameter.getValue() != null) {
 
-			if (actionInputParameter == null) {
-				continue;
-			}
+				actionDescriptor.addPathVariable(actionInputParameter.getKey(), actionInputParameter.getValue());
 
-			String key = entry.getKey();
-			actionDescriptor.addPathVariable(key, actionInputParameter);
-
-			if (!actionInputParameter.isRequestBody()) {
-				values.put(key, actionInputParameter.getValueFormatted());
+				if (!actionInputParameter.getValue().isRequestBody()) {
+					values.put(actionInputParameter.getKey(), actionInputParameter.getValue().getValueFormatted());
+				}
 			}
 		}
 
 		Map<String, ActionInputParameter> requestHeadersMap = getActionInputParameters(RequestHeader.class, invokedMethod,
 				arguments);
+		for (Map.Entry<String, ActionInputParameter> actionInputParameter : requestHeadersMap.entrySet()) {
 
-		for (Map.Entry<String, ActionInputParameter> entry : requestHeadersMap.entrySet()) {
-			ActionInputParameter actionInputParameter = entry.getValue();
-			if (actionInputParameter != null) {
-				String key = entry.getKey();
-				actionDescriptor.addRequestHeader(key, actionInputParameter);
-				if (!actionInputParameter.isRequestBody()) {
-					values.put(key, actionInputParameter.getValueFormatted());
+			if (actionInputParameter.getValue() != null) {
+
+				actionDescriptor.addRequestHeader(actionInputParameter.getKey(), actionInputParameter.getValue());
+
+				if (!actionInputParameter.getValue().isRequestBody()) {
+					values.put(actionInputParameter.getKey(), actionInputParameter.getValue().getValueFormatted());
 				}
 			}
 		}
@@ -104,15 +104,33 @@ class ActionDescriptorBuilder {
 		Map<String, ActionInputParameter> requestBodyMap = getActionInputParameters(RequestBody.class, invokedMethod,
 				arguments);
 		Assert.state(requestBodyMap.size() < 2, "found more than one request body on " + invokedMethod.getName());
-		for (ActionInputParameter value : requestBodyMap.values()) {
-			actionDescriptor.setRequestBody(value);
+		for (ActionInputParameter actionInputParameter : requestBodyMap.values()) {
+			actionDescriptor.setRequestBody(actionInputParameter);
 		}
 
 		return actionDescriptor;
 	}
 
 	/**
-	 * Returns {@link ActionInputParameter}s contained in the method link.
+	 * Look up the {@link ActionDescriptor}s for a given {@link Method}'s {@link RequestParam}s + {@link DTOParam}s
+	 * and transform them into a {@link Map}.
+	 * 
+	 * @param invokedMethod
+	 * @param arguments
+	 * @return
+	 */
+	static Map<String, ActionInputParameter> getRequestParamsAndDtoParams(Method invokedMethod, Object[] arguments) {
+
+		Map<String, ActionInputParameter> parameterMap = new HashMap<String, ActionInputParameter>();
+
+		parameterMap.putAll(getActionInputParameters(RequestParam.class, invokedMethod, arguments));
+		parameterMap.putAll(getDtoActionInputParameters(invokedMethod, arguments));
+
+		return parameterMap;
+	}
+
+	/**
+	 * Return the {@link ActionInputParameter}s based on the {@link Method} and associated {@link Annotation}.
 	 *
 	 * @param annotation to inspect
 	 * @param method must not be {@literal null}.
@@ -173,15 +191,5 @@ class ActionDescriptorBuilder {
 		}
 
 		return result;
-	}
-
-	static Map<String, ActionInputParameter> getRequestParams(Method invokedMethod, Object[] arguments) {
-		
-		// the action descriptor needs to know the param type, value and name
-		Map<String, ActionInputParameter> requestParamMap = getActionInputParameters(RequestParam.class, invokedMethod,
-				arguments);
-		requestParamMap.putAll(getDtoActionInputParameters(invokedMethod, arguments));
-
-		return requestParamMap;
 	}
 }

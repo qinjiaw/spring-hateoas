@@ -2,7 +2,7 @@ package org.springframework.hateoas.xhtml.beans;
 
 import java.io.Serializable;
 
-import org.springframework.hateoas.halforms.beans.DummyController.RemoteOptions;
+import org.springframework.hateoas.hal.forms.support.DummyController.RemoteOptions;
 
 import org.springframework.hateoas.affordance.springmvc.AffordanceBuilder;
 

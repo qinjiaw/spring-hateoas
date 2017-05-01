@@ -21,6 +21,8 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 
+import lombok.Singular;
+
 import org.springframework.util.Assert;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -33,7 +35,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class ResourceSupport implements Identifiable<Link> {
 
-	private final List<Link> links;
+	@Singular private final List<Link> links;
 
 	public ResourceSupport() {
 		this.links = new ArrayList<Link>();

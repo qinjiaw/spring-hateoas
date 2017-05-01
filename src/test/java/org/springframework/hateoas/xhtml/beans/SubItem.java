@@ -11,7 +11,7 @@ import org.springframework.hateoas.affordance.springmvc.AffordanceBuilder;
 
 import org.springframework.hateoas.Identifiable;
 import org.springframework.hateoas.affordance.Suggest;
-import org.springframework.hateoas.halforms.beans.DummyController.RemoteOptions;
+import org.springframework.hateoas.hal.forms.support.DummyController.RemoteOptions;
 
 public class SubItem implements Identifiable<Integer>, Serializable {
 

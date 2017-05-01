@@ -30,7 +30,7 @@ public class DefaultDocumentationProvider implements DocumentationProvider {
 
 	/*
 	 * (non-Javadoc)
-	 * @see de.escalon.hypermedia.spring.DocumentationProvider#getDocumentationUrl(de.escalon.hypermedia.affordance.ActionInputParameter, java.lang.Object)
+	 * @see DocumentationProvider#getDocumentationUrl(ActionInputParameter, java.lang.Object)
 	 */
 	@Override
 	public String getDocumentationUrl(ActionInputParameter annotatedParameter, Object content) {
@@ -39,7 +39,7 @@ public class DefaultDocumentationProvider implements DocumentationProvider {
 
 	/*
 	 * (non-Javadoc)
-	 * @see de.escalon.hypermedia.spring.DocumentationProvider#getDocumentationUrl(java.lang.reflect.Field, java.lang.Object)
+	 * @see DocumentationProvider#getDocumentationUrl(java.lang.reflect.Field, java.lang.Object)
 	 */
 	@Override
 	public String getDocumentationUrl(Field field, Object content) {
@@ -48,7 +48,7 @@ public class DefaultDocumentationProvider implements DocumentationProvider {
 
 	/*
 	 * (non-Javadoc)
-	 * @see de.escalon.hypermedia.spring.DocumentationProvider#getDocumentationUrl(java.lang.reflect.Method, java.lang.Object)
+	 * @see DocumentationProvider#getDocumentationUrl(java.lang.reflect.Method, java.lang.Object)
 	 */
 	@Override
 	public String getDocumentationUrl(Method method, Object content) {
@@ -57,7 +57,7 @@ public class DefaultDocumentationProvider implements DocumentationProvider {
 
 	/*
 	 * (non-Javadoc)
-	 * @see de.escalon.hypermedia.spring.DocumentationProvider#getDocumentationUrl(java.lang.Class, java.lang.Object)
+	 * @see DocumentationProvider#getDocumentationUrl(java.lang.Class, java.lang.Object)
 	 */
 	@Override
 	public String getDocumentationUrl(Class<?> clazz, Object content) {
@@ -66,7 +66,7 @@ public class DefaultDocumentationProvider implements DocumentationProvider {
 
 	/*
 	 * (non-Javadoc)
-	 * @see de.escalon.hypermedia.spring.DocumentationProvider#getDocumentationUrl(java.lang.String, java.lang.Object)
+	 * @see DocumentationProvider#getDocumentationUrl(java.lang.String, java.lang.Object)
 	 */
 	@Override
 	public String getDocumentationUrl(String name, Object content) {

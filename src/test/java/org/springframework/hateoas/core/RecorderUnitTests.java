@@ -17,12 +17,12 @@ package org.springframework.hateoas.core;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
-import static org.springframework.hateoas.core.Recorder.DefaultPropertyNameDetectionStrategy.getPropertyName;
+import static org.springframework.hateoas.core.Recorder.DefaultPropertyNameDetectionStrategy.*;
 
 import lombok.Getter;
-
 import org.junit.Ignore;
 import org.junit.Test;
+
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.hateoas.core.Recorder.Recorded;
 
@@ -53,7 +53,7 @@ public class RecorderUnitTests {
 	/**
 	 * @author Oliver Gierke
 	 */
-	private static enum FooConverter implements Converter<Foo, Object> {
+	private enum FooConverter implements Converter<Foo, Object> {
 
 		INSTANCE;
 

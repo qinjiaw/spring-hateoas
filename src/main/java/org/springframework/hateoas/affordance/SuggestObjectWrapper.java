@@ -27,7 +27,7 @@ import lombok.EqualsAndHashCode;
  * @param <T>
  */
 @Data
-@EqualsAndHashCode(of = {"text", "svalue"})
+@EqualsAndHashCode(of = {"text", "suggestionValue"})
 public class SuggestObjectWrapper<T> implements WrappedValue<T> {
 
 	public static final String ID = path(on(SuggestObjectWrapper.class).getSuggestionValue());

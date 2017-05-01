@@ -35,7 +35,7 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.hateoas.EntityLinks;
 import org.springframework.hateoas.LinkDiscoverer;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaConfigurationImportSelector;
-import org.springframework.hateoas.halforms.HalFormsConfiguration;
+import org.springframework.hateoas.hal.forms.HalFormsConfiguration;
 import org.springframework.hateoas.siren.SirenConfiguration;
 import org.springframework.hateoas.uber.UberConfiguration;
 import org.springframework.hateoas.xhtml.XHtmlConfiguration;
@@ -73,7 +73,7 @@ public @interface EnableHypermediaSupport {
 	 * 
 	 * @author Oliver Gierke
 	 */
-	static enum HypermediaType {
+	enum HypermediaType {
 
 		/**
 		 * HAL - Hypermedia Application Language.
@@ -93,13 +93,13 @@ public @interface EnableHypermediaSupport {
 
 		private List<String> configurations;
 
-		private HypermediaType(String... configurations) {
+		HypermediaType(String... configurations) {
 			this.configurations = Arrays.asList(configurations);
 		}
 	}
 
 	@Slf4j
-	static class HypermediaConfigurationImportSelector implements ImportSelector {
+	class HypermediaConfigurationImportSelector implements ImportSelector {
 
 		/* 
 		 * (non-Javadoc)

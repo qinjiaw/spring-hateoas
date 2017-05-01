@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.hateoas.Identifiable;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.LinkBuilder;
@@ -35,14 +33,11 @@ import org.springframework.hateoas.affordance.ActionDescriptor;
 import org.springframework.hateoas.affordance.Affordance;
 import org.springframework.hateoas.affordance.TypedResource;
 import org.springframework.hateoas.core.DummyInvocationUtils;
+import org.springframework.hateoas.mvc.UriComponentsSupport;
 import org.springframework.util.Assert;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
@@ -142,7 +137,7 @@ public class AffordanceBuilder implements LinkBuilder {
 	 * Creates a new {@link AffordanceBuilder} pointing to this server, but without ActionDescriptor.
 	 */
 	AffordanceBuilder() {
-		this(new UriTemplate(getBuilder().build().toString()).expand(Collections.<String, Object>emptyMap()),
+		this(new UriTemplate(UriComponentsSupport.getBuilder().build().toString()).expand(Collections.<String, Object>emptyMap()),
 				Collections.<ActionDescriptor>emptyList());
 	}
 
@@ -419,72 +414,6 @@ public class AffordanceBuilder implements LinkBuilder {
 	@Override
 	public String toString() {
 		return this.partialUriTemplateComponents.toString();
-	}
-
-	/**
-	 * Returns a {@link UriComponentsBuilder} obtained from the current servlet mapping with the host tweaked in case the
-	 * request contains an {@code X-Forwarded-Host} header and the scheme tweaked in case the request contains an
-	 * {@code X-Forwarded-Ssl} header
-	 *
-	 * @return builder
-	 */
-	static UriComponentsBuilder getBuilder() {
-
-		HttpServletRequest request = getCurrentRequest();
-		ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromServletMapping(request);
-
-		String forwardedSsl = request.getHeader("X-Forwarded-Ssl");
-
-		if (StringUtils.hasText(forwardedSsl) && forwardedSsl.equalsIgnoreCase("on")) {
-			builder.scheme("https");
-		}
-
-		String host = request.getHeader("X-Forwarded-Host");
-
-		if (!StringUtils.hasText(host)) {
-			return builder;
-		}
-
-		String[] hosts = StringUtils.commaDelimitedListToStringArray(host);
-		String hostToUse = hosts[0];
-
-		if (hostToUse.contains(":")) {
-
-			String[] hostAndPort = StringUtils.split(hostToUse, ":");
-
-			builder.host(hostAndPort[0]);
-			builder.port(Integer.parseInt(hostAndPort[1]));
-		} else {
-			builder.host(hostToUse);
-			builder.port(-1); // reset port if it was forwarded from default port
-		}
-
-		String port = request.getHeader("X-Forwarded-Port");
-
-		if (StringUtils.hasText(port)) {
-			builder.port(Integer.parseInt(port));
-		}
-
-		return builder;
-	}
-
-	/**
-	 * Copy of {@link ServletUriComponentsBuilder#getCurrentRequest()} until SPR-10110 gets fixed.
-	 *
-	 * @return request
-	 */
-	private static HttpServletRequest getCurrentRequest() {
-
-		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-
-		Assert.notNull(requestAttributes, "Could not find current request via RequestContextHolder");
-		Assert.isInstanceOf(ServletRequestAttributes.class, requestAttributes);
-
-		HttpServletRequest servletRequest = ((ServletRequestAttributes) requestAttributes).getRequest();
-
-		Assert.notNull(servletRequest, "Could not find current HttpServletRequest");
-
-		return servletRequest;
 	}
 
 	/**

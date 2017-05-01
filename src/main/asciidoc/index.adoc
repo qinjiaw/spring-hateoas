@@ -537,7 +537,7 @@ include::{snippets}/basic/1/http-request.adoc[]
 
 As expected, we get back a collection resource with `_embedded` and `_links`.
 
-include::{snippets}/basic/1/http-response.adoc[]
+include::{snippets}/basic/1/response-body.adoc[]
 
 This document is chock full of data. But when it comes time to create a new employee, what do we do?
 
@@ -551,7 +551,7 @@ include::{snippets}/basic/2/http-request.adoc[]
 
 This will give us a HAL-Forms document.
 
-include::{snippets}/basic/2/http-response.adoc[]
+include::{snippets}/basic/2/response-body.adoc[]
 
 We can see the *self* link at the top. But below that, is a *templates* section. These are operations we can perform.
 
@@ -568,7 +568,7 @@ include::{snippets}/basic/4/http-request.adoc[]
 
 NOTE: We skipped navigating to the HAL record for `/employees/0` and jumped straight to the HAL-Form:
 
-include::{snippets}/basic/4/http-response.adoc[]
+include::{snippets}/basic/4/response-body.adoc[]
 
 You can see the self link as well as the link back to the collection resource. But focusing on the self like
 (which HAL-Forms apply to), there are two templates: *PUT* and *PATCH*. In PUT, both properties are required,

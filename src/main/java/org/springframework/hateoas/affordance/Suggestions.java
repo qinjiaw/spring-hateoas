@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Wither;
@@ -102,6 +103,7 @@ public abstract class Suggestions {
 	 */
 	@Getter
 	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+	@EqualsAndHashCode
 	public static class ValueSuggestions<T> extends CustomizableSuggestions implements Iterable<T> {
 
 		private final Collection<T> suggestions;
@@ -133,6 +135,7 @@ public abstract class Suggestions {
 
 	@Getter
 	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+	@EqualsAndHashCode
 	public static class ExternalSuggestions extends CustomizableSuggestions {
 
 		private final String reference;
@@ -155,6 +158,7 @@ public abstract class Suggestions {
 
 	@Getter
 	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+	@EqualsAndHashCode
 	public static class RemoteSuggestions extends CustomizableSuggestions {
 
 		private final UriTemplate template;

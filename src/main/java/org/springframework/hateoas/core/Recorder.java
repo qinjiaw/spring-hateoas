@@ -103,7 +103,7 @@ public class Recorder implements MethodInterceptor {
 		String getPropertyName(Method method);
 	}
 
-	static enum DefaultPropertyNameDetectionStrategy implements PropertyNameDetectionStrategy {
+	enum DefaultPropertyNameDetectionStrategy implements PropertyNameDetectionStrategy {
 
 		INSTANCE;
 
