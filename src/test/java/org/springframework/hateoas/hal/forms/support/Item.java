@@ -1,63 +1,66 @@
+/*
+ * Copyright 2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.springframework.hateoas.hal.forms.support;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+import org.springframework.hateoas.affordance.SimpleSuggest;
+import org.springframework.hateoas.affordance.Suggest;
+import org.springframework.hateoas.affordance.SuggestObjectWrapper;
+import org.springframework.hateoas.affordance.SuggestType;
 import org.springframework.hateoas.affordance.formaction.DTOParam;
 import org.springframework.hateoas.affordance.formaction.Input;
 import org.springframework.hateoas.affordance.formaction.Options;
 import org.springframework.hateoas.affordance.formaction.Select;
 import org.springframework.hateoas.affordance.formaction.Type;
-import org.springframework.hateoas.affordance.SimpleSuggest;
-import org.springframework.hateoas.affordance.Suggest;
-import org.springframework.hateoas.affordance.SuggestObjectWrapper;
-import org.springframework.hateoas.affordance.SuggestType;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@Data
+@EqualsAndHashCode(of = {"id", "name"})
 public class Item implements Serializable {
 
 	private int id;
-
 	private String name;
-
 	private ItemType type;
-
 	private List<SubItem> multiple;
-
 	private SubItem singleSub;
-
 	private int searchedSubItem;
-
 	private int subItemId;
-
 	private double amount;
-
 	private AnotherSubItem another;
-
 	private SubEntity subEntity;
-
 	private List<ListableSubEntity> listSubEntity;
-
 	private boolean flag;
-
 	private List<Integer> integerList;
-
 	private List<String> undefinedList;
-
 	private List<ListableSubEntity> wildCardEntityList;
-
 	private List<WildCardedListableSubEntity> doubleLevelWildCardEntityList;
-
 	private String[] stringArray;
-
 	private ListableSubEntity[] arraySubEntity;
-
 	private ListableSubEntity[] wildcardArraySubEntity;
 
 	public Item(final int id, final String name) {
+
 		this(id, name, ItemType.ONE, Collections.<SubItem> emptyList(), SubItem.VALIDS[0], SubItem.VALIDS[0].getId(),
 				SubItem.VALIDS[0].getId(), AnotherSubItem.VALIDS[0], null, null, 1.0, false, Collections.<Integer> emptyList(),
 				Collections.<String> emptyList(), Collections.<ListableSubEntity> emptyList(),
@@ -92,6 +95,7 @@ public class Item implements Serializable {
 			@JsonProperty("arraySubEntity") @DTOParam final ListableSubEntity[] arraySubEntity,
 			@JsonProperty("wildcardArraySubEntity") @DTOParam(
 					wildcard = true) final ListableSubEntity[] wildcardArraySubEntity) {
+
 		this.id = id;
 		this.name = name;
 		this.type = type;
@@ -110,128 +114,6 @@ public class Item implements Serializable {
 		this.stringArray = stringArray;
 		this.arraySubEntity = arraySubEntity;
 		this.wildcardArraySubEntity = wildcardArraySubEntity;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public ItemType getType() {
-		return type;
-	}
-
-	public List<SubItem> getMultiple() {
-		return multiple;
-	}
-
-	public void setMultiple(final List<SubItem> multiple) {
-		this.multiple = multiple;
-	}
-
-	public SubItem getSingleSub() {
-		return singleSub;
-	}
-
-	public int getSubItemId() {
-		return subItemId;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (id ^ (id >>> 32));
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Item other = (Item) obj;
-		if (id != other.id) {
-			return false;
-		}
-		if (name == null) {
-			if (other.name != null) {
-				return false;
-			}
-		} else if (!name.equals(other.name)) {
-			return false;
-		}
-		return true;
-	}
-
-	public void setId(final int id) {
-		this.id = id;
-	}
-
-	public void setName(final String name) {
-		this.name = name;
-	}
-
-	public void setType(final ItemType type) {
-		this.type = type;
-	}
-
-	public void setSubItemId(final int subItemId) {
-		this.subItemId = subItemId;
-	}
-
-	public int getSearchedSubItem() {
-		return searchedSubItem;
-	}
-
-	public double getAmount() {
-		return amount;
-	}
-
-	public void setSingleSub(final SubItem singleSub) {
-		this.singleSub = singleSub;
-	}
-
-	public void setAmount(final double amount) {
-		this.amount = amount;
-	}
-
-	public void setSearchedSubItem(final int searchedSubItem) {
-		this.searchedSubItem = searchedSubItem;
-	}
-
-	public AnotherSubItem getAnother() {
-		return another;
-	}
-
-	public void setAnother(final AnotherSubItem another) {
-		this.another = another;
-	}
-
-	public SubEntity getSubEntity() {
-		return subEntity;
-	}
-
-	public void setSubEntity(final SubEntity subEntity) {
-		this.subEntity = subEntity;
-	}
-
-	public List<ListableSubEntity> getListSubEntity() {
-		return listSubEntity;
-	}
-
-	public void setListSubEntity(final List<ListableSubEntity> listSubEntity) {
-		this.listSubEntity = listSubEntity;
 	}
 
 	public static class IntegerListOptions implements Options<SuggestObjectWrapper<Integer>> {
@@ -241,69 +123,5 @@ public class Item implements Serializable {
 			return SimpleSuggest.wrap(new Integer[] { 0, 1, 2, 3, 4, 5 });
 		}
 
-	}
-
-	public boolean isFlag() {
-		return flag;
-	}
-
-	public void setFlag(final boolean flag) {
-		this.flag = flag;
-	}
-
-	public List<Integer> getIntegerList() {
-		return integerList;
-	}
-
-	public void setIntegerList(final List<Integer> integerList) {
-		this.integerList = integerList;
-	}
-
-	public List<String> getUndefinedList() {
-		return undefinedList;
-	}
-
-	public void setUndefinedList(final List<String> undefinedList) {
-		this.undefinedList = undefinedList;
-	}
-
-	public List<ListableSubEntity> getWildCardEntityList() {
-		return wildCardEntityList;
-	}
-
-	public void setWildCardEntityList(final List<ListableSubEntity> wildCardEntityList) {
-		this.wildCardEntityList = wildCardEntityList;
-	}
-
-	public List<WildCardedListableSubEntity> getDoubleLevelWildCardEntityList() {
-		return doubleLevelWildCardEntityList;
-	}
-
-	public void setDoubleLevelWildCardEntityList(final List<WildCardedListableSubEntity> doubleLevelWildCardEntityList) {
-		this.doubleLevelWildCardEntityList = doubleLevelWildCardEntityList;
-	}
-
-	public String[] getStringArray() {
-		return stringArray;
-	}
-
-	public void setStringArray(final String[] stringArray) {
-		this.stringArray = stringArray;
-	}
-
-	public ListableSubEntity[] getArraySubEntity() {
-		return arraySubEntity;
-	}
-
-	public void setArraySubEntity(final ListableSubEntity[] arraySubEntity) {
-		this.arraySubEntity = arraySubEntity;
-	}
-
-	public ListableSubEntity[] getWildcardArraySubEntity() {
-		return wildcardArraySubEntity;
-	}
-
-	public void setWildcardArraySubEntity(final ListableSubEntity[] wildcardArraySubEntity) {
-		this.wildcardArraySubEntity = wildcardArraySubEntity;
 	}
 }

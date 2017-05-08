@@ -1,12 +1,30 @@
+/*
+ * Copyright 2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.springframework.hateoas.hal.forms;
 
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.*;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.*;
 import static org.springframework.hateoas.affordance.springmvc.AffordanceBuilder.*;
-import static org.springframework.hateoas.hal.forms.HalFormsDocument.halFormsDocument;
-import static org.springframework.hateoas.support.MappingUtils.read;
+import static org.springframework.hateoas.hal.forms.HalFormsDocument.*;
+import static org.springframework.hateoas.hal.forms.Jackson2HalFormsModule.*;
+import static org.springframework.hateoas.support.MappingUtils.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
@@ -50,8 +68,7 @@ import org.springframework.hateoas.hal.Jackson2HalModule;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -70,9 +87,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+/**
+ *  @author Dietrich Schulten
+ */
+@RunWith(SpringRunner.class)
 @WebAppConfiguration
-@ContextConfiguration
 public class HalFormsSerializationTest {
 
 	@Autowired
@@ -100,7 +119,7 @@ public class HalFormsSerializationTest {
 		this.objectMapper.registerModule(new Jackson2HalModule());
 		this.objectMapper.registerModule(new Jackson2HalFormsModule());
 		this.objectMapper.setHandlerInstantiator(
-			new Jackson2HalFormsModule.HalFormsHandlerInstantiator(this.relProvider, this.curieProvider, null, true));
+			new HalFormsHandlerInstantiator(this.relProvider, this.curieProvider, null, true));
 
 	}
 
@@ -191,7 +210,7 @@ public class HalFormsSerializationTest {
 		Object entity = HalFormsUtils.toHalFormsDocument(order, objectMapper);
 		String json = objectMapper.writeValueAsString(entity);
 
-		// If there are no @RequestParam AffordanceBuilder doesn't declare a UriTemplate variable
+		// If there are no @RequestParams, AffordanceBuilder doesn't declare a UriTemplate variable
 		assertThat(json,
 				hasJsonPath("$._links['test:orders'].href", equalTo("http://localhost/orders/filtered{?count,status}")));
 	}

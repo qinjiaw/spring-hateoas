@@ -109,9 +109,9 @@ public class UberJackson2HttpMessageConverter extends AbstractHttpMessageConvert
 	 */
 	protected JsonEncoding getJsonEncoding(MediaType contentType) {
 
-		if (contentType != null && contentType.getCharSet() != null) {
+		if (contentType != null && contentType.getCharset() != null) {
 
-			Charset charset = contentType.getCharSet();
+			Charset charset = contentType.getCharset();
 
 			for (JsonEncoding encoding : JsonEncoding.values()) {
 				if (charset.name().equals(encoding.getJavaName())) {

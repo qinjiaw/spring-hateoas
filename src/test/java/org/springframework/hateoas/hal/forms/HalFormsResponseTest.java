@@ -1,3 +1,18 @@
+/*
+ * Copyright 2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.springframework.hateoas.hal.forms;
 
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.*;
@@ -20,13 +35,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
-import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
 import org.springframework.hateoas.hal.Jackson2HalModule;
 import org.springframework.hateoas.hal.forms.support.DummyController;
 import org.springframework.hateoas.hal.forms.support.Item;
 import org.springframework.http.HttpMethod;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -36,36 +49,21 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+/**
+ *  @author Dietrich Schulten
+ */
+@RunWith(SpringRunner.class)
 @WebAppConfiguration
-@ContextConfiguration
 public class HalFormsResponseTest {
 
 	static final ObjectMapper objectMapper = new ObjectMapper();
 
-	static DummyController dm;
-
-	private enum SuggestType {
-		REMOTE, DIRECT, EMBEDDED;
-	}
+	@Autowired
+	WebApplicationContext wac;
 
 	Map<Integer, SuggestType> suggestProperties = new HashMap<Integer, SuggestType>();
 	Map<Integer, List<Map<String, Object>>> suggestsValuesList = new HashMap<Integer, List<Map<String, Object>>>();
-
-	@Configuration
-	@EnableWebMvc
-	@EnableHypermediaSupport(type = { HypermediaType.HAL })
-	static class WebConfig extends WebMvcConfigurerAdapter {
-
-		@Bean
-		public DummyController dummyController() {
-			dm = new DummyController();
-			return dm;
-		}
-
-	}
-
-	@Autowired private WebApplicationContext wac;
+	DummyController dm;
 
 	@Before
 	public void setUp() {
@@ -74,11 +72,80 @@ public class HalFormsResponseTest {
 
 		webAppContextSetup(wac).build();
 
-		dm.setUp();
+		this.dm = wac.getBean(DummyController.class);
+		this.dm.setUp();
 
 		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 		objectMapper.registerModule(new Jackson2HalModule());
 		objectMapper.registerModule(new Jackson2HalFormsModule());
+	}
+
+	@Test
+	public void testRequestWithStatusFound() throws Exception {
+
+		int index = 0;
+
+		for (Item item : dm.items) {
+			assertCommonForItem(index, DummyController.DELETE, HttpMethod.DELETE.toString().toLowerCase());
+			JsonNode jsonNode = assertCommonForItem(index, DummyController.MODIFY, HttpMethod.PUT.toString().toLowerCase());
+			String jsonEdit = jsonNode.toString();
+
+			assertProperty(jsonEdit, 0, path(on(Item.class).getId()), false, false, Integer.toString(item.getId()));
+			assertProperty(jsonEdit, 1, path(on(Item.class).getName()), DummyController.NAME_READONLY.contains(index),
+					DummyController.NAME_REQUIRED.contains(index), item.getName());
+			assertProperty(jsonEdit, 2, path(on(Item.class).getType()), DummyController.TYPE_READONLY.contains(index),
+					DummyController.TYPE_REQUIRED.contains(index), item.getType().toString());
+			assertProperty(jsonEdit, 3, path(on(Item.class).getMultiple()), false, false,
+					objectMapper.writeValueAsString(item.getMultiple()));
+			assertProperty(jsonEdit, 4, path(on(Item.class).getSingleSub()), DummyController.SUBITEM_READONLY.contains(index),
+					DummyController.SUBITEM_REQUIRED.contains(index), objectMapper.writeValueAsString(item.getSingleSub()));
+			assertProperty(jsonEdit, 5, path(on(Item.class).getSubItemId()),
+					DummyController.SUBITEM_ID_READONLY.contains(index), DummyController.SUBITEM_ID_REQUIRED.contains(index),
+					Integer.toString(item.getSubItemId()));
+			assertProperty(jsonEdit, 6, path(on(Item.class).getSearchedSubItem()),
+					DummyController.SEARCHED_SUBITEM_READONLY.contains(index),
+					DummyController.SEARCHED_SUBITEM_REQUIRED.contains(index), String.valueOf(item.getSearchedSubItem()));
+			assertProperty(jsonEdit, 7, path(on(Item.class).getAnother()),
+					DummyController.ANOTHER_SUBITEM_READONLY.contains(index),
+					DummyController.ANOTHER_SUBITEM_REQUIRED.contains(index), objectMapper.writeValueAsString(item.getAnother()));
+			assertProperty(jsonEdit, 9, path(on(Item.class).getSubEntity().getName()),
+					DummyController.SUBENTITY_NAME_READONLY.contains(index),
+					DummyController.SUBENTITY_NAME_REQUIRED.contains(index), item.getSubEntity().getName());
+			assertProperty(jsonEdit, 10, path(on(Item.class).getSubEntity().getMultiple()),
+					DummyController.SUBENTITY_MULTIPLE_READONLY.contains(index),
+					DummyController.SUBENTITY_MULTIPLE_REQUIRED.contains(index),
+					objectMapper.writeValueAsString(item.getSubEntity().getMultiple()));
+			assertProperty(jsonEdit, 16, path(on(Item.class).getListSubEntity()) + "[0].lkey",
+					DummyController.LIST_SUBENTITY_KEY_READONLY.contains(index),
+					DummyController.LIST_SUBENTITY_KEY_REQUIRED.contains(index),
+					Integer.toString(item.getListSubEntity().get(0).getLkey()));
+			assertProperty(jsonEdit, 24, path(on(Item.class).getAmount()), DummyController.AMOUNT_READONLY.contains(index),
+					DummyController.AMOUNT_REQUIRED.contains(index), Double.toString(item.getAmount()));
+			assertProperty(jsonEdit, 25, path(on(Item.class).isFlag()), DummyController.FLAG_READONLY.contains(index),
+					DummyController.FLAG_REQUIRED.contains(index), String.valueOf(item.isFlag()));
+			assertProperty(jsonEdit, 26, path(on(Item.class).getIntegerList()),
+					DummyController.INTEGER_LIST_READONLY.contains(index), DummyController.INTEGER_LIST_REQUIRED.contains(index),
+					objectMapper.writeValueAsString(item.getIntegerList()));
+			assertProperty(jsonEdit, 32, path(on(Item.class).getDoubleLevelWildCardEntityList()) + "[*].lkey",
+					DummyController.LIST_WC_SUBENTITY_KEY_READONLY.contains(index),
+					DummyController.LIST_WC_SUBENTITY_KEY_REQUIRED.contains(index),
+					Integer.toString(item.getDoubleLevelWildCardEntityList().get(0).getLkey()));
+			assertProperty(jsonEdit, 33, path(on(Item.class).getDoubleLevelWildCardEntityList()) + "[*].lname",
+					DummyController.LIST_WC_SUBENTITY_NAME_READONLY.contains(index),
+					DummyController.LIST_WC_SUBENTITY_NAME_REQUIRED.contains(index),
+					item.getDoubleLevelWildCardEntityList().get(0).getLname());
+			assertProperty(jsonEdit, 36, path(on(Item.class).getDoubleLevelWildCardEntityList()) + "[*].subItemList[*].id",
+					DummyController.LIST_WC_SUBENTITYLIST_ID_READONLY.contains(index),
+					DummyController.LIST_WC_SUBENTITYLIST_ID_REQUIRED.contains(index),
+					Integer.toString(item.getDoubleLevelWildCardEntityList().get(0).getSubItemList().get(0).getId()));
+			assertProperty(jsonEdit, 38, path(on(Item.class).getStringArray()),
+					DummyController.ARRAY_READONLY.contains(index), DummyController.ARRAY_REQUIRED.contains(index),
+					objectMapper.writeValueAsString(item.getStringArray()));
+
+//			assertSuggest(jsonNode);
+
+			index++;
+		}
 	}
 
 	private void loadControlValues() {
@@ -218,77 +285,6 @@ public class HalFormsResponseTest {
 		suggestValue.put("prompt", "5");
 		valuesList.add(suggestValue);
 		suggestsValuesList.put(26, valuesList);
-
-	}
-
-	@Test
-	public void testRequestWithStatusFound() throws Exception {
-
-		int index = 0;
-
-		for (Item item : dm.items) {
-			assertCommonForItem(index, DummyController.DELETE, HttpMethod.DELETE.toString().toLowerCase());
-			JsonNode jsonNode = assertCommonForItem(index, DummyController.MODIFY, HttpMethod.PUT.toString().toLowerCase());
-			String jsonEdit = jsonNode.toString();
-
-			System.out.println(jsonEdit);
-
-			assertProperty(jsonEdit, 0, path(on(Item.class).getId()), false, false, Integer.toString(item.getId()));
-			assertProperty(jsonEdit, 1, path(on(Item.class).getName()), DummyController.NAME_READONLY.contains(index),
-					DummyController.NAME_REQUIRED.contains(index), item.getName());
-			assertProperty(jsonEdit, 2, path(on(Item.class).getType()), DummyController.TYPE_READONLY.contains(index),
-					DummyController.TYPE_REQUIRED.contains(index), item.getType().toString());
-			assertProperty(jsonEdit, 3, path(on(Item.class).getMultiple()), false, false,
-					objectMapper.writeValueAsString(item.getMultiple()));
-			assertProperty(jsonEdit, 4, path(on(Item.class).getSingleSub()), DummyController.SUBITEM_READONLY.contains(index),
-					DummyController.SUBITEM_REQUIRED.contains(index), objectMapper.writeValueAsString(item.getSingleSub()));
-			assertProperty(jsonEdit, 5, path(on(Item.class).getSubItemId()),
-					DummyController.SUBITEM_ID_READONLY.contains(index), DummyController.SUBITEM_ID_REQUIRED.contains(index),
-					Integer.toString(item.getSubItemId()));
-			assertProperty(jsonEdit, 6, path(on(Item.class).getSearchedSubItem()),
-					DummyController.SEARCHED_SUBITEM_READONLY.contains(index),
-					DummyController.SEARCHED_SUBITEM_REQUIRED.contains(index), String.valueOf(item.getSearchedSubItem()));
-			assertProperty(jsonEdit, 7, path(on(Item.class).getAnother()),
-					DummyController.ANOTHER_SUBITEM_READONLY.contains(index),
-					DummyController.ANOTHER_SUBITEM_REQUIRED.contains(index), objectMapper.writeValueAsString(item.getAnother()));
-			assertProperty(jsonEdit, 9, path(on(Item.class).getSubEntity().getName()),
-					DummyController.SUBENTITY_NAME_READONLY.contains(index),
-					DummyController.SUBENTITY_NAME_REQUIRED.contains(index), item.getSubEntity().getName());
-			assertProperty(jsonEdit, 10, path(on(Item.class).getSubEntity().getMultiple()),
-					DummyController.SUBENTITY_MULTIPLE_READONLY.contains(index),
-					DummyController.SUBENTITY_MULTIPLE_REQUIRED.contains(index),
-					objectMapper.writeValueAsString(item.getSubEntity().getMultiple()));
-			assertProperty(jsonEdit, 16, path(on(Item.class).getListSubEntity()) + "[0].lkey",
-					DummyController.LIST_SUBENTITY_KEY_READONLY.contains(index),
-					DummyController.LIST_SUBENTITY_KEY_REQUIRED.contains(index),
-					Integer.toString(item.getListSubEntity().get(0).getLkey()));
-			assertProperty(jsonEdit, 24, path(on(Item.class).getAmount()), DummyController.AMOUNT_READONLY.contains(index),
-					DummyController.AMOUNT_REQUIRED.contains(index), Double.toString(item.getAmount()));
-			assertProperty(jsonEdit, 25, path(on(Item.class).isFlag()), DummyController.FLAG_READONLY.contains(index),
-					DummyController.FLAG_REQUIRED.contains(index), String.valueOf(item.isFlag()));
-			assertProperty(jsonEdit, 26, path(on(Item.class).getIntegerList()),
-					DummyController.INTEGER_LIST_READONLY.contains(index), DummyController.INTEGER_LIST_REQUIRED.contains(index),
-					objectMapper.writeValueAsString(item.getIntegerList()));
-			assertProperty(jsonEdit, 32, path(on(Item.class).getDoubleLevelWildCardEntityList()) + "[*].lkey",
-					DummyController.LIST_WC_SUBENTITY_KEY_READONLY.contains(index),
-					DummyController.LIST_WC_SUBENTITY_KEY_REQUIRED.contains(index),
-					Integer.toString(item.getDoubleLevelWildCardEntityList().get(0).getLkey()));
-			assertProperty(jsonEdit, 33, path(on(Item.class).getDoubleLevelWildCardEntityList()) + "[*].lname",
-					DummyController.LIST_WC_SUBENTITY_NAME_READONLY.contains(index),
-					DummyController.LIST_WC_SUBENTITY_NAME_REQUIRED.contains(index),
-					item.getDoubleLevelWildCardEntityList().get(0).getLname());
-			assertProperty(jsonEdit, 36, path(on(Item.class).getDoubleLevelWildCardEntityList()) + "[*].subItemList[*].id",
-					DummyController.LIST_WC_SUBENTITYLIST_ID_READONLY.contains(index),
-					DummyController.LIST_WC_SUBENTITYLIST_ID_REQUIRED.contains(index),
-					Integer.toString(item.getDoubleLevelWildCardEntityList().get(0).getSubItemList().get(0).getId()));
-			assertProperty(jsonEdit, 38, path(on(Item.class).getStringArray()),
-					DummyController.ARRAY_READONLY.contains(index), DummyController.ARRAY_REQUIRED.contains(index),
-					objectMapper.writeValueAsString(item.getStringArray()));
-
-			//assertSuggest(jsonNode);
-
-			index++;
-		}
 	}
 
 	private void assertProperty(final String jsonEdit, final int i, final String name, final boolean readOnly,
@@ -298,6 +294,7 @@ public class HalFormsResponseTest {
 		assertThat(jsonEdit, hasJsonPath("$._templates.default.properties[" + i + "].readOnly", equalTo(readOnly)));
 
 		String requiredProperty = "$._templates.default.properties[" + i + "].required";
+
 		if (required) {
 			assertThat(jsonEdit, hasJsonPath(requiredProperty, equalTo(required)));
 		} else {
@@ -375,9 +372,29 @@ public class HalFormsResponseTest {
 		 */
 		assertThat(json, hasJsonPath("$._templates.default"));
 		assertThat(json, hasJsonPath("$._templates.default.method", equalTo(method)));
+
 		if (method.equals("get") || method.equals("delete")) {
 			assertThat(json, hasNoJsonPath("$._templates.delete.properties"));
 		}
+		
 		return jsonNode;
 	}
+
+	private enum SuggestType {
+		REMOTE, DIRECT, EMBEDDED;
+	}
+
+	@Configuration
+	@EnableWebMvc
+	@EnableHypermediaSupport(type = {EnableHypermediaSupport.HypermediaType.HAL})
+	static class WebConfig extends WebMvcConfigurerAdapter {
+
+		@Bean
+		public DummyController dummyController() {
+			return new DummyController();
+		}
+
+	}
+
+
 }
